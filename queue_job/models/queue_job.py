@@ -167,12 +167,6 @@ class QueueJob(models.Model):
             if msg:
                 record.message_post(body=msg, subtype="queue_job.mt_job_failed")
 
-    def write(self, vals):
-        res = super(QueueJob, self).write(vals)
-        if vals.get("state") == "failed":
-            self._message_post_on_failure()
-        return res
-
     def _subscribe_users_domain(self):
         """Subscribe all users having the 'Queue Job Manager' group"""
         group = self.env.ref("queue_job.group_queue_job_manager")
