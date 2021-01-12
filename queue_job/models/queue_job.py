@@ -187,6 +187,20 @@ class QueueJob(models.Model):
             )
         return super().create(vals_list)
 
+    def write(self, vals):
+        if self.env.context.get("_job_edit_sentinel") is not self.EDIT_SENTINEL:
+            write_on_protected_fields = [
+                fieldname for fieldname in vals if fieldname in self._protected_fields
+            ]
+            if write_on_protected_fields:
+                raise exceptions.AccessError(
+                    _("Not allowed to change field(s): {}").format(
+                        write_on_protected_fields
+                    )
+                )
+
+        return super().write(vals)
+
     def open_related_action(self):
         """Open the related action associated to the job"""
         self.ensure_one()
