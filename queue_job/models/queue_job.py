@@ -199,9 +199,6 @@ class QueueJob(models.Model):
                     )
                 )
 
-        if vals.get("state") == "failed":
-            self._message_post_on_failure()
-
         return super().write(vals)
 
     def open_related_action(self):
